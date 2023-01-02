@@ -6,16 +6,16 @@ import routerProducts from "./src/routes/products.js";
 import cors from "cors";
 
 const app = express();
-dotenv.config();
-app.use(cors());
 app.use(express.json());
+app.use(cors());
+dotenv.config();
+
+routerCategories(app);
+routerProducts(app);
 
 mongoose.connect(process.env.MONGDB).then(() => {
   console.log("Kết nối db thành công !");
 });
-
-routerCategories(app);
-routerProducts(app);
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
