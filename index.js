@@ -13,7 +13,7 @@ dotenv.config();
 routerCategories(app);
 routerProducts(app);
 mongoose.set("strictQuery", false);
-mongoose.connect(process.env.MONGDB, { useNewUrlParser: true }).then(() => {
+mongoose.connect(process.env.MONGDB).then(() => {
   console.log("Kết nối db thành công !");
 });
 
