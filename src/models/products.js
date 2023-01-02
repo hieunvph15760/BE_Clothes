@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+const { ObjectId } = mongoose.Type;
 
 const Products = mongoose.Schema({
   name: {
@@ -26,7 +27,7 @@ const Products = mongoose.Schema({
     required: true,
   },
   category: {
-    type: mongoose.Types.ObjectId,
+    type: ObjectId,
     ref: "Category",
   },
   quantity: {
