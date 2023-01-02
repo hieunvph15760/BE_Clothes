@@ -1,10 +1,10 @@
-import categories from "../models/categories.js";
-import products from "../models/Products.js";
+import CategoriesSchema from "../modules/categories.js";
+import BooksSchema from "../modules/products.js";
 
-export const createCategory = async (req, res) => {
+export const create = async (req, res) => {
   try {
-    const category = await new categories(req.body).save();
-    return res.json(category);
+    const category = await new CategoriesSchema(req.body).save();
+    res.json(category);
   } catch (error) {
     return res.status(400).json({
       message: "Không thêm được danh mục !",
@@ -12,10 +12,10 @@ export const createCategory = async (req, res) => {
   }
 };
 
-export const getCategories = async (req, res) => {
+export const list = async (req, res) => {
   try {
-    const category = await categories.find({}).exec();
-    return res.json(category);
+    const category = await CategoriesSchema.find({}).exec();
+    res.json(category);
   } catch (error) {
     return res.status(400).json({
       message: "Không lấy được danh mục !",
@@ -23,26 +23,42 @@ export const getCategories = async (req, res) => {
   }
 };
 
-export const getCategoryDetail = async (req, res) => {
+export const CategoriesDetails = async (req, res) => {
   try {
-    const category = await categories.findOne({ _id: req.params.id }).exec();
-    return res.json(category);
+    const category = await CategoriesSchema.findOne({
+      _id: req.params.id,
+    }).exec();
+    const books = await BooksSchema.find({ category: category })
+      .populate("category")
+      .select("-category")
+      .exec();
+    res.json(books);
   } catch (error) {
     return res.status(400).json({
-      message: "Không lấy được chi tiết danh mục !",
+      message: "Không tìm thấy !",
     });
   }
 };
 
-export const removeCategory = async (req, res) => {
+export const getCategory = async (req, res) => {
   try {
-    const category = await categories
-      .findByIdAndDelete({ _id: req.params.id })
-      .exec();
-    return res.json({
-      result: category,
-      message: "Xóa danh mục thành công !",
+    const category = await CategoriesSchema.findOne({
+      _id: req.params.id,
+    }).exec();
+    res.json(category);
+  } catch (error) {
+    return res.status(400).json({
+      message: "Không lấy được danh mục !",
     });
+  }
+};
+
+export const remove = async (req, res) => {
+  try {
+    const category = await CategoriesSchema.findOneAndDelete({
+      _id: req.params.id,
+    }).exec();
+    res.json(category);
   } catch (error) {
     return res.status(400).json({
       message: "Không xóa được danh mục !",
@@ -50,34 +66,17 @@ export const removeCategory = async (req, res) => {
   }
 };
 
-export const updateCategory = async (req, res) => {
+export const update = async (req, res) => {
   try {
-    const category = await categories
-      .findByIdAndUpdate({ _id: req.params.id }, req.body, { new: true })
-      .exec();
-    return res.json(category);
+    const category = await CategoriesSchema.findOneAndUpdate(
+      { _id: req.params.id },
+      req.body,
+      { new: true }
+    ).exec();
+    res.json(category);
   } catch (error) {
     return res.status(400).json({
-      message: "Không cập nhật được danh mục !",
-    });
-  }
-};
-
-export const getProductByCategories = async (req, res) => {
-  try {
-    const category = await categories.findOne({ _id: req.params.id }).exec();
-    const product = await products
-      .find({ category: category })
-      .populate("category")
-      .select("-category")
-      .exec();
-    res.json({
-      category,
-      product,
-    });
-  } catch (error) {
-    res.status(400).json({
-      error: "Không tìm thấy sản phẩm theo danh mục !",
+      message: "Không sửa được danh mục !",
     });
   }
 };

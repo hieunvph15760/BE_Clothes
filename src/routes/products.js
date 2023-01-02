@@ -1,21 +1,24 @@
 import { Router } from "express";
 import {
-  createProduct,
-  getProducts,
-  getProductDetail,
-  removeProduct,
-  updateProduct,
+  create,
+  getBook,
+  list,
+  litmitBooks,
+  pagination,
+  remove,
+  searchBooks,
+  update,
 } from "../controllers/products.js";
 
 const router = Router();
 
-const routerProducts = (app) => {
-  router.post("/products", createProduct);
-  router.put("/products/:id", updateProduct);
-  router.get("/products", getProducts);
-  router.delete("/products/:id", removeProduct);
-  router.get("/productsDetail/:id", getProductDetail);
-  return app.use("/api", router);
-};
+router.get("/products", list);
+router.post("/products", create);
+router.get("/productsPagination/:page", pagination);
+router.get("/products/:id", getBook);
+router.delete("/products/:id", remove);
+router.put("/products/:id", update);
+router.get("/litmitProducts", litmitBooks);
+router.get("/searchProducts", searchBooks);
 
-export default routerProducts;
+export default router;

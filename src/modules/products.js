@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
-const { ObjectId } = mongoose.Type;
-
-const Products = mongoose.Schema(
+const { ObjectId } = mongoose.Types;
+const ProductsSchema = mongoose.Schema(
   {
     name: {
       type: String,
@@ -38,5 +37,7 @@ const Products = mongoose.Schema(
   },
   { timestamps: true }
 );
-
-export default mongoose.model("products", Products);
+ProductsSchema.index({ name: "text" });
+const products = mongoose.model("products", ProductsSchema);
+products.createIndexes({ name: "text" });
+export default products;

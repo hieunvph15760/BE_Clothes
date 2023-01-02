@@ -1,23 +1,13 @@
 import { Router } from "express";
-import {
-  createCategory,
-  getCategories,
-  getCategoryDetail,
-  removeCategory,
-  updateCategory,
-  getProductByCategories,
-} from "../controllers/categories.js";
+import { CategoriesDetails, create, getCategory, list, remove, update } from "../controllers/categories.js";
 
 const router = Router();
 
-const routerCategories = (app) => {
-  router.post("/categories", createCategory);
-  router.put("/categories/:id", updateCategory);
-  router.get("/categories", getCategories);
-  router.delete("/categories/:id", removeCategory);
-  router.get("/categoriesDetail/:id", getCategoryDetail);
-  router.get("/getProductByCategories/:id", getProductByCategories);
-  return app.use("/api", router);
-};
+router.post("/categories",create)
+router.get("/categories",list)
+router.get("/categories/:id",getCategory)
+router.delete("/categories/:id",remove)
+router.put("/categories/:id",update)
+router.get("/categoriesDetails/:id",CategoriesDetails);
 
-export default routerCategories;
+export default router;

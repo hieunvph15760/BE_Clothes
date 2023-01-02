@@ -1,65 +1,104 @@
-import products from "../models/Products.js";
+import BooksSchema from "../modules/products.js";
 
-export const createProduct = async (req, res) => {
+export const create = async (req, res) => {
   try {
-    const product = await new products(req.body).save();
-    return res.json(product);
+    const book = await new BooksSchema(req.body).save();
+    res.json(book);
   } catch (error) {
     return res.status(400).json({
-      message: "Không thêm được sản phẩm !",
+      message: "Không thêm được sách !",
     });
   }
 };
 
-export const getProducts = async (req, res) => {
+export const list = async (req, res) => {
   try {
-    const product = await products.find({}).exec();
-    return res.json(product);
+    const book = await BooksSchema.find({}).exec();
+    res.json(book);
   } catch (error) {
     return res.status(400).json({
-      message: "Không lấy được sản phẩm !",
+      message: "Không lấy được sách !",
     });
   }
 };
 
-export const getProductDetail = async (req, res) => {
+export const getBook = async (req, res) => {
   try {
-    const product = await products.findOne({ _id: req.params.id }).exec();
-    return res.json(product);
+    const book = await BooksSchema.findOne({ _id: req.params.id }).exec();
+    res.json(book);
   } catch (error) {
     return res.status(400).json({
-      message: "Không lấy được chi tiết sản phẩm !",
+      message: "Không lấy được sách !",
     });
   }
 };
 
-export const removeProduct = async (req, res) => {
+export const remove = async (req, res) => {
   try {
-    const product = await products
-      .findByIdAndDelete({
-        _id: req.params.id,
-      })
+    const book = await BooksSchema.findOneAndDelete({
+      _id: req.params.id,
+    }).exec();
+    res.json(book);
+  } catch (error) {
+    return res.status(400).json({
+      message: "Không xóa được sách !",
+    });
+  }
+};
+
+export const update = async (req, res) => {
+  try {
+    const book = await BooksSchema.findOneAndUpdate(
+      { _id: req.params.id },
+      req.body,
+      { new: true }
+    ).exec();
+    res.json(book);
+  } catch (error) {
+    return res.status(400).json({
+      message: "Không sửa được sách !",
+    });
+  }
+};
+
+export const litmitBooks = async (req, res) => {
+  const limit = req.query.limit;
+  const sort = req.query.sort;
+  // const search = {$text:{$search:search}}
+  try {
+    const book = await BooksSchema.find({}).sort(sort).limit(limit).exec();
+    res.json(book);
+  } catch (error) {
+    return res.status(400).json({
+      message: "Không lấy được sách !",
+    });
+  }
+};
+
+export const searchBooks = async (req, res) => {
+  const search = req.query.search;
+  try {
+    const book = await BooksSchema.find({ $text: { $search: search } }).exec();
+    res.json(book);
+  } catch (error) {
+    return res.status(400).json({
+      message: "Không lấy được sách !",
+    });
+  }
+};
+
+export const pagination = async (req, res) => {
+  const perPage = 4;
+  const page = req.params.page || 1;
+  try {
+    const book = await BooksSchema.find()
+      .skip(perPage * page - perPage)
+      .limit(perPage)
       .exec();
-    return res.json({
-      result: product,
-      message: "Xóa sản phẩm thành công !",
-    });
+    res.json(book);
   } catch (error) {
     return res.status(400).json({
-      message: "Không xóa được sản phẩm !",
-    });
-  }
-};
-
-export const updateProduct = async (req, res) => {
-  try {
-    const product = await products
-      .findByIdAndUpdate({ _id: req.params.id }, req.body, { new: true })
-      .exec();
-    return res.json(product);
-  } catch (error) {
-    return res.status(400).json({
-      message: "Không cập nhật được sản phẩm !",
+      message: "Không lấy được sách !",
     });
   }
 };
