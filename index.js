@@ -12,8 +12,8 @@ dotenv.config();
 
 routerCategories(app);
 routerProducts(app);
-
-mongoose.connect(process.env.MONGDB).then(() => {
+mongoose.set("strictQuery", false);
+mongoose.connect(process.env.MONGDB, { useNewUrlParser: true }).then(() => {
   console.log("Kết nối db thành công !");
 });
 
